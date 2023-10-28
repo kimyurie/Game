@@ -1,3 +1,4 @@
+import axios from "axios";
 import { useState, useEffect } from "react";
 
 // 오목
@@ -6,15 +7,6 @@ function Game2() {
   var [start, setStart] = useState(true);
   var [color, setColor] = useState(''); // 돌의 색상
   var [clickedCell, setClickedCell] = useState([]); // 클릭한 셀의 위치
-
-  useEffect(() => {
-    let a = setTimeout(() => {
-      setStart(false);
-    }, 3000);
-    return () => {
-      clearTimeout(a);
-    };
-  }, []);
 
   const handleCellClick = (i,j) => {
     // 클릭한 셀의 위치가 배열에 추가되도록
@@ -25,7 +17,44 @@ function Game2() {
     document.getElementById(`cell-${i}-${j}`).style.backgroundColor = newColor;
     // 현재 클릭된 돌의 색 변경
     setColor(newColor);
+    
+    // 게임 상황
+    const encodeGameBoard = () => {
+      const encodedSituation = row.map(i => {
+        return row.map(j => {
+          const cellValue = clickedCell.some(cell => cell.i === i && cell.j === j)
+            ? color === 'black' ? '1' : '2' : '0';
+          return cellValue;
+        }).join('');
+      }).join('/');
+  
+      return encodedSituation;
+    };
+
+    const situationData = encodeGameBoard();
+
+    axios.post('https://jsonplaceholder.typicode.com/posts', { // 임시 서버
+      color : newColor === 'black' ? '1' : '2', // 1이면 흑, 2이면 백
+      // location : { x : 14 - i, y : j}, // 왼쪽 아래 (1,1) 기준 좌표
+      location : 14-i + ',' + j,
+      // (13,1) => (1,1) , (13,2) => (1,2)
+      // (12,1) => (2,1) , (12,2) => (2,2)
+      situation : situationData // 게임 상황
+    }).then(res => {
+      console.log(res.data)
+    }).catch(err => {
+      console.log('실패')
+    })
   }
+
+  useEffect(() => {
+    let a = setTimeout(() => {
+      setStart(false);
+    }, 3000);
+    return () => {
+      clearTimeout(a);
+    };
+  }, []);
 
   return (
     <div>
@@ -40,10 +69,9 @@ function Game2() {
                 {row.map(function (j) {
                   return <td 
                     id = {`cell-${i}-${j}`}
-                    className = {clickedCell.some(a => a.i === i & a.j === j) ? color : ''} 
-                    onClick={() => 
-                    handleCellClick(i,j) 
-                  }></td>;
+                    // 클릭된 셀의 위치값과 현재 i, j의 위치가 같으면 color
+                    className = {clickedCell.some(a => a.i === i & a.j === j) ? color : ''}  
+                    onClick={() => handleCellClick(i,j)}></td>;
                 })}
               </tr>
             );
@@ -55,3 +83,18 @@ function Game2() {
 }
 
 export default Game2;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
