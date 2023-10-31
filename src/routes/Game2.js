@@ -1,49 +1,45 @@
-import axios from "axios";
 import { useState, useEffect } from "react";
+import axios from "axios";
 
 // 오목
 function Game2() {
-  var row = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13];
+  var col = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13];
   var [start, setStart] = useState(true);
   var [color, setColor] = useState(''); // 돌의 색상
-  var [clickedCell, setClickedCell] = useState([]); // 클릭한 셀의 위치
+  var [clickedCell, setClickedCell] = useState([]); // 클릭한 칸의 좌표
 
   const handleCellClick = (i,j) => {
-    // 클릭한 셀의 위치가 배열에 추가되도록
-    setClickedCell([...clickedCell, {i,j}]);
-    // 현재 클릭된 셀의 돌의 색 저장
+    setClickedCell([...clickedCell, {i,j}])
     const newColor = color === 'black' ? 'white' : 'black';
-    // 현재 클릭된 셀의 돌 색 변경
-    document.getElementById(`cell-${i}-${j}`).style.backgroundColor = newColor;
-    // 현재 클릭된 돌의 색 변경
+    document.getElementById(`cell-${i}-${j}`).style.background = newColor;
     setColor(newColor);
-    
-    // 게임 상황
+
     const encodeGameBoard = () => {
-      const encodedSituation = row.map(i => {
-        return row.map(j => {
-          const cellValue = clickedCell.some(cell => cell.i === i && cell.j === j)
-            ? color === 'black' ? '1' : '2' : '0';
-          return cellValue;
-        }).join('');
-      }).join('/');
-  
-      return encodedSituation;
-    };
+        return col.map((i) => {
+           return col.map((j) => {
+              {
+                if(document.getElementById(`cell-${i}-${j}`).style.background == 'black' ){
+                  return '1'
+                }else if(document.getElementById(`cell-${i}-${j}`).style.background == 'white'){
+                  return '2'
+                }else{
+                  return '0'
+                }
+              }
+        }).join("")}).join("/");
+    }
 
-    const situationData = encodeGameBoard();
-
-    axios.post('https://jsonplaceholder.typicode.com/posts', { // 임시 서버
-      color : newColor === 'black' ? '1' : '2', // 1이면 흑, 2이면 백
-      // location : { x : 14 - i, y : j}, // 왼쪽 아래 (1,1) 기준 좌표
-      location : 14-i + ',' + j,
-      // (13,1) => (1,1) , (13,2) => (1,2)
-      // (12,1) => (2,1) , (12,2) => (2,2)
-      situation : situationData // 게임 상황
-    }).then(res => {
-      console.log(res.data)
-    }).catch(err => {
-      console.log('실패')
+    // post로 데이터 보내기
+    axios.post("https://jsonplaceholder.typicode.com/posts", { // 임시 서버
+      color : newColor === 'black' ? '1' : '2',
+      location : (i - 1) + "," + (j - 1),
+      situation : encodeGameBoard(),
+    })
+    .then((res) => {
+      console.log(res.data);
+    })
+    .catch((err) => {
+      console.log('실패');
     })
   }
 
@@ -63,15 +59,16 @@ function Game2() {
       <table className="tb2" onClick={() => {
       }}>
         <tbody>
-          {row.map(function (i) {
+          {col.map(function (i) {
             return (
-              <tr>
-                {row.map(function (j) {
-                  return <td 
-                    id = {`cell-${i}-${j}`}
-                    // 클릭된 셀의 위치값과 현재 i, j의 위치가 같으면 color
-                    className = {clickedCell.some(a => a.i === i & a.j === j) ? color : ''}  
-                    onClick={() => handleCellClick(i,j)}></td>;
+              <tr key={i}>
+                {col.map(function (j) {
+                  return <td  
+                            key={`${i}-${j}`}
+                            id={`cell-${i}-${j}`}
+                            className={ clickedCell.some(e => e.i === i && e.j === j) ? color : '' }
+                            onClick={() => handleCellClick(i,j) }>
+                    </td>;
                 })}
               </tr>
             );
@@ -83,7 +80,6 @@ function Game2() {
 }
 
 export default Game2;
-
 
 
 
