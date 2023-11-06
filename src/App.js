@@ -47,18 +47,17 @@ function App() {
                       </Nav.Link>
                     </Nav.Item>
                   </Nav>
-                  <div className="tab_content">
-                    <TabContent tab={tab} />
-                  </div>
-                </div>
+                      <div className="tab_content">
+                        <TabContent tab={tab} />
+                      </div>
+                    </div>
               </div>
               <footer>
                 <h2>footer</h2>
               </footer>
             </div>
           }
-        >
-        </Route>
+        ></Route>
       </Routes>
     </div>
   );
@@ -82,7 +81,6 @@ function Content() {
     </div>
   );
 }
-
 
 function TabContent(props) {
   return <>{[<Game1 />, <Game2 />, <Game3 />, <Game4 />][props.tab]}</>;
