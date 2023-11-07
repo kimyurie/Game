@@ -9,6 +9,7 @@ function Game2() {
   var [clickedCell, setClickedCell] = useState([]); // 클릭한 칸의 좌표
   var [modal, setModal] = useState(false); // 다시하기 모달창
   var [alert, setAlert] = useState(false); // 3-3 금지 알림
+  var [table, setTable] = useState(false); // 오목판 전체 상태
 
   const handleCellClick = (i, j) => {
     setClickedCell([...clickedCell, { i, j }]);
@@ -75,6 +76,7 @@ function Game2() {
   // 다시 하기 버튼 클릭 시 modal 값을 false로 변경
   const resetBtn = () => {
     setModal(false);
+    setTable(true);
   };
 
   return (
@@ -82,12 +84,13 @@ function Game2() {
       {modal ? <Modal reset={resetBtn}/> : null}
       {alert ? <Caution/> : null}
 
-      {/* 오목판 */}
       {start == true ? <p>* 흑돌 먼저 시작 !</p> : <p>&nbsp;</p>}
 
+      {table ? window.location.reload('/game/2'): ''}
+      
       <table className="tb2" onClick={() => { 
-        // return setModal(true)  // 임시로 table 클릭 시 다시하기 모달창 나오도록
-        return setAlert(true) // 임시로 table 클릭 시 3-3 경고창 나오도록
+        return setModal(true)  // 임시로 table 클릭 시 다시하기 모달창 나오도록
+        // return setAlert(true) // 임시로 table 클릭 시 3-3 경고창 나오도록
       }}>
         <tbody>
           {col.map(function (i) {
@@ -117,7 +120,7 @@ function Modal(props){
     <>
       <div style={{background: "white", width: "190px",height: "145px",borderRadius: "10px",padding: "20px", position: "absolute",margin: "20% 33%"}}>
         <p style={{ marginBottom: "40px", fontSize: "17px" }}>🏆️ 흰 돌 승리! </p>
-        <button style={{  marginBottom: "30px", border: "none",height: "35px",background: "#3369fe", color: "#eee", borderRadius: "5px"}}
+        <button style={{  marginBottom: "30px", border: "none",height: "35px", background: "#3369fe", color: "#eee", borderRadius: "5px"}}
                 onClick={props.reset}>다시 하기</button>
       </div>
     </>
