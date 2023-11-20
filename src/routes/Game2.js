@@ -11,13 +11,11 @@ function Game2() {
   var [alert, setAlert] = useState(false); // 3-3 금지 알림
   var [table, setTable] = useState(false); // 오목판 전체 상태
 
-
   const handleCellClick = (i, j) => {
     setClickedCell([...clickedCell, { i, j }]);
     const newColor = color === "black" ? "white" : "black";
     document.getElementById(`cell-${i}-${j}`).style.background = newColor;
     setColor(newColor);
-
 
     const encodeGameBoard = () => {
       return col
