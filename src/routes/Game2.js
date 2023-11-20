@@ -1,4 +1,4 @@
-import { useState, useEffect, useTransition } from "react";
+import { useState, useEffect} from "react";
 import axios from "axios";
 
 // 오목
