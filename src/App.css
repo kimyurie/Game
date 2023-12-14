@@ -63,12 +63,11 @@ margin: 30px auto;
 }
 
 .tb1 td {
-border: 1px solid #ffffff;
+border: 1px solid #aba9a9;
 }
 
-.white_line{
-  background: white;
-  border: 1px solid grey;
+.white_line {
+  background: rgb(255, 255, 255);
 }
 
 /* Game2.js */
