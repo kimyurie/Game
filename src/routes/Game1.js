@@ -88,51 +88,42 @@ function Game1() {
             .reverse()
             .map((e) => e.split(""))
         );
-        setTimeReset(true)
+        handleReset()
       })
       .catch((err) => {
         console.log("실패");
       });
   };
-  const GV = {
-    isPause: false,
-    timer: null
-}
+  
 
+  //타이머
+  const [seconds, setSeconds] = useState(60);
+  const [isRunning, setIsRunning] = useState(true);
 
-  const startTimer = function(){
-    GV.isPause = false;
-    GV.timer = setInterval(function () {
-      count -= 1;
-      if (count >= 0) {
-        setCount(count);
-      }
-    },1000)
-}
-
-const stopTimer = function(){
-  clearInterval(GV.timer);
-  GV.isPause = true;
-}
-
-  function timePlay() {
-    
-  }
-  let a ;
+  const handleReset = () => {
+    // 타이머를 초기 상태로 재설정
+    setSeconds(60);
+    setIsRunning(true);
+  };
+  
   useEffect(() => {
-    if(timeReset==false){
-     startTimer()
+    let timer;
+
+    if (isRunning) {
+      // 타이머가 실행 중일 때만 동작
+      timer = setInterval(() => {
+        setSeconds((prevSeconds) => (prevSeconds > 0 ? prevSeconds - 1 : 0));
+      }, 1000);
     }
 
-    if (timeReset==true) {
-      setCount(60)
-      stopTimer()
-    }
-  }, [timeReset]);
+    // 컴포넌트가 언마운트되거나 중단되면 타이머를 정리
+    return () => clearInterval(timer);
+  }, [isRunning]);
+  // 
 
   return (
     <div>
-      <p>⏲ 남은 시간 : {count} 초</p>
+      <p>⏲ 남은 시간 : {seconds} 초</p>
 
       <table className="tb1">
         <tbody>
