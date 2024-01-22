@@ -12,10 +12,10 @@ function Game2() {
   var [table, setTable] = useState(false); // 오목판 전체 상태
 
   const handleCellClick = (i, j) => {
-    setClickedCell([...clickedCell, { i, j }]);
+    // setClickedCell([...clickedCell, { i, j }]);
     const newColor = color === "black" ? "white" : "black";
-    document.getElementById(`cell-${i}-${j}`).style.background = newColor;
-    setColor(newColor);
+    // document.getElementById(`cell-${i}-${j}`).style.background = newColor;
+    // setColor(newColor);
 
     const encodeGameBoard = () => {
       return col
@@ -41,16 +41,28 @@ function Game2() {
         .join("/");
     };
 
+    console.log(newColor === "black" ? "1" : "2");
+    console.log((i -1) + "," + (j-1));
+    console.log(encodeGameBoard());
+
     // post로 데이터 보내기
     axios
-      .post("https://jsonplaceholder.typicode.com/posts", {
+      .post("http://15.164.164.15:8080/omok/place", { // 서버 수정 
         // 임시 서버
         color: newColor === "black" ? "1" : "2",
         location: i - 1 + "," + (j - 1),
         situation: encodeGameBoard(),
       })
       .then((res) => {
+        // 클릭된 셀의 위치를 {{i:1, j:2}, {i:2,j:1}...} 형식으로 누적되 저장
+        setClickedCell([...clickedCell, { i, j }]);
+        // 현재 클릭된 셀의 돌 색을 변경
+        document.getElementById(`cell-${i}-${j}`).style.background = newColor;
+       // 현재 클릭된 돌의 색상을 변경
+        setColor(newColor);
+
         console.log(res.data);
+
       })
       .catch((err) => {
         console.log("실패");
@@ -68,26 +80,19 @@ function Game2() {
 
 
   // // 테이블 클릭할 때마다 3 - 3 경고창 나오고 2초후 사라지도록
-  useEffect(() => {
-    setTimeout(() => {
-      setAlert(false);
-      // 클릭한 돌의 색상을 투명하게 바꾸기
-      // 클릭한 돌의 좌표?
-      // console.log(clickedCell[0].i);
-      //   document.getElementById(`cell-${i}-${j}`).style.background = 'transparent'
-      // }, 2000);
+  // useEffect(() => {
+  //   setTimeout(() => {
+  //     setAlert(false);
 
-      console.log(clickedCell)
-
-      let count = 0;
-      // 클릭할때마다 돌의 색상을 투명하게 바꾸기
-      if (clickedCell.length > 0) {
-        let { i, j } = clickedCell[clickedCell.length-1];
-        document.getElementById(`cell-${i}-${j}`).style.backgroundColor = 'transparent';
-        count++;
-      }
-    }, 2000);
-  }, [alert, clickedCell]);
+  //     let count = 0;
+  //     // 클릭할때마다 돌의 색상을 투명하게 바꾸기
+  //     if (clickedCell.length > 0) {
+  //       let { i, j } = clickedCell[clickedCell.length-1];
+  //       document.getElementById(`cell-${i}-${j}`).style.backgroundColor = 'transparent';
+  //       count++;
+  //     }
+  //   }, 2000);
+  // }, [alert, clickedCell]);
 
   // 다시 하기 버튼 클릭 시 modal 값을 false로 변경
   const resetBtn = () => {
@@ -106,7 +111,7 @@ function Game2() {
       
       <table className="tb2" onClick={() => { 
         // return setModal(true)  // 임시로 table 클릭 시 다시하기 모달창 나오도록
-        return setAlert(true) // 임시로 table 클릭 시 3-3 경고창 나오도록
+        // return setAlert(true) // 임시로 table 클릭 시 3-3 경고창 나오도록
       }}>
         <tbody>
           {col.map(function (i) {

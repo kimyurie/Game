@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
+// json-server ./db.json --port 3001 키고 하기!!
 
 // 지뢰찾기
 function Game1() {
@@ -161,3 +162,4 @@ function Game1() {
 }
 
 export default Game1;
+
