@@ -3,19 +3,16 @@ import axios from "axios";
 
 // 오목
 function Game2() {
-  var col = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13];
-  var [start, setStart] = useState(true);
-  var [color, setColor] = useState(""); // 돌의 색상
-  var [clickedCell, setClickedCell] = useState([]); // 클릭한 칸의 좌표
-  var [modal, setModal] = useState(false); // 다시하기 모달창
-  var [alert, setAlert] = useState(false); // 3-3 금지 알림
-  var [table, setTable] = useState(false); // 오목판 전체 상태
+  const col = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13];
+  const [start, setStart] = useState(true);
+  const [color, setColor] = useState(""); // 돌의 색상
+  const [clickedCell, setClickedCell] = useState([]); // 클릭한 칸의 좌표
+  const [modal, setModal] = useState(false); // 다시하기 모달창
+  const [alert, setAlert] = useState(false); // 3-3 금지 알림
+  const [table, setTable] = useState(false); // 오목판 전체 상태
 
   const handleCellClick = (i, j) => {
-    // setClickedCell([...clickedCell, { i, j }]);
     const newColor = color === "black" ? "white" : "black";
-    // document.getElementById(`cell-${i}-${j}`).style.background = newColor;
-    // setColor(newColor);
 
     const encodeGameBoard = () => {
       return col
@@ -50,7 +47,7 @@ function Game2() {
       .post("http://15.164.164.15:8080/omok/place", { // 서버 수정 
         // 임시 서버
         color: newColor === "black" ? "1" : "2",
-        location: i - 1 + "," + (j - 1),
+        location: `${i - 1},${j - 1}`,
         situation: encodeGameBoard(),
       })
       .then((res) => {
@@ -70,12 +67,10 @@ function Game2() {
   };
 
   useEffect(() => {
-    let a = setTimeout(() => {
+    const a = setTimeout(() => {
       setStart(false);
     }, 3000);
-    return () => {
-      clearTimeout(a);
-    };
+    return () => clearTimeout(a);
   }, []);
 
 
