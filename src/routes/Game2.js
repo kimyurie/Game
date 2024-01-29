@@ -7,7 +7,8 @@ function Game2() {
   const [start, setStart] = useState(true);
   const [color, setColor] = useState(""); // 돌의 색상
   const [clickedCell, setClickedCell] = useState([]); // 클릭한 칸의 좌표
-  const [modal, setModal] = useState(false); // 다시하기 모달창
+  const [modal_wht, setModal_wht] = useState(false); // 다시하기 모달창 흰
+  const [modal_blk, setModal_blk] = useState(false); // 다시하기 모달창 흑
   const [alert, setAlert] = useState(false); // 3-3 금지 알림
   const [table, setTable] = useState(false); // 오목판 전체 상태
 
@@ -58,6 +59,18 @@ function Game2() {
        // 현재 클릭된 돌의 색상을 변경
         setColor(newColor);
 
+        //  if (res.data == '33'){
+        //   // setAlert(true)
+        // } 
+
+        // 각 돌 승리시 승리 모달창 띄움
+        if(res.data == '백돌 승리입니다'){
+          setModal_wht(true);
+        }
+        if(res.data == '흑돌 승리입니다') {
+          setModal_blk(true);
+        }
+
         console.log(res.data);
 
       })
@@ -89,15 +102,21 @@ function Game2() {
   //   }, 2000);
   // }, [alert, clickedCell]);
 
+
+
+
   // 다시 하기 버튼 클릭 시 modal 값을 false로 변경
   const resetBtn = () => {
-    setModal(false);
+    setModal_wht(false);
+    setModal_blk(false);
     setTable(true);
   };
 
   return (
     <>
-      {modal ? <Modal reset={resetBtn}/> : null}
+      {modal_wht ? <Modal_wht reset={resetBtn}/> : null}
+      {modal_blk ? <Modal_blk reset={resetBtn}/> : null}
+
       {alert ? <Caution/> : null}
 
       {start == true ? <p>* 흑돌 먼저 시작 !</p> : <p>&nbsp;</p>}
@@ -105,7 +124,6 @@ function Game2() {
       {table ? window.location.reload('/game/2'): ''}
       
       <table className="tb2" onClick={() => { 
-        // return setModal(true)  // 임시로 table 클릭 시 다시하기 모달창 나오도록
         // return setAlert(true) // 임시로 table 클릭 시 3-3 경고창 나오도록
       }}>
         <tbody>
@@ -130,18 +148,31 @@ function Game2() {
   );
 }
 
-{/* 다시 하기 모달창 */}
-function Modal(props){
+{/* 다시 하기 모달창 - 백 돌 승리시 */}
+function Modal_wht(props){
   return (
     <>
       <div style={{background: "white", width: "190px",height: "145px",borderRadius: "10px",padding: "20px", position: "absolute",margin: "20% 33%"}}>
-        <p style={{ marginBottom: "40px", fontSize: "17px" }}>🏆️ 흰 돌 승리! </p>
+        <p style={{ marginBottom: "40px", fontSize: "17px" }}>🏆️ 백 돌 승리! </p>
         <button style={{  marginBottom: "30px", border: "none",height: "35px", background: "#3369fe", color: "#eee", borderRadius: "5px"}}
                 onClick={props.reset}>다시 하기</button>
       </div>
     </>
   )
 }
+{/* 다시 하기 모달창 - 흑 돌 승리시 */}
+function Modal_blk(props){
+  return (
+    <>
+      <div style={{background: "white", width: "190px",height: "145px",borderRadius: "10px",padding: "20px", position: "absolute",margin: "20% 33%"}}>
+        <p style={{ marginBottom: "40px", fontSize: "17px" }}>🏆️ 흑 돌 승리! </p>
+        <button style={{  marginBottom: "30px", border: "none",height: "35px", background: "#3369fe", color: "#eee", borderRadius: "5px"}}
+                onClick={props.reset}>다시 하기</button>
+      </div>
+    </>
+  )
+}
+
 
 {/* 3-3 금지 알림 */}
 function Caution(){
